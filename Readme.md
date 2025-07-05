@@ -1,5 +1,5 @@
 # Latticefold+
 
-THis is experimental Latticefold+ implementation.
+THis is experimental [Latticefold+](https://eprint.iacr.org/2025/247.pdf) implementation.
 
-THis is brief [introduction to latticefold+](https://hackmd.io/vM0_xErKQAS2_RC1QRMUTw)
+This is my brief [introduction to latticefold+](https://hackmd.io/vM0_xErKQAS2_RC1QRMUTw)
