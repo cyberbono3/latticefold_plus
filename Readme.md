@@ -1,4 +1,4 @@
-# Latticefold+
+# Latticefold+ (WIP)
 
 THis is experimental [Latticefold+](https://eprint.iacr.org/2025/247.pdf) implementation.
 
