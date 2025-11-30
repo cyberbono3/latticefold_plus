@@ -82,3 +82,12 @@ impl<const N: usize, C: FpConfig<N>> Ring for Fp<C, N> {
     const ZERO: Self = <C as FpConfig<N>>::ZERO;
     const ONE: Self = <C as FpConfig<N>>::ONE;
 }
+
+pub trait PolyRing {
+    type BaseRing: Ring;
+
+    fn coeffs(&self) -> &[Self::BaseRing];
+    fn coeffs_mut(&mut self) -> &mut [Self::BaseRing];
+    fn into_coeffs(self) -> Vec<Self::BaseRing>;
+    fn dimension(&self) -> usize;
+}

@@ -10,6 +10,7 @@ pub mod constants;
 pub mod error;
 pub mod ntt_params;
 pub mod params;
+pub mod ring;
 pub mod ring_config;
 pub mod ring_element;
 pub mod traits;
@@ -24,6 +25,7 @@ pub use constants::{
 pub use error::{CyclotomicRingError, Result};
 pub use ntt_params::NTTParams;
 pub use params::RingParams;
+pub use ring::CyclotomicRing;
 pub use ring_config::RingConfig;
 pub use ring_element::RingElement;
 pub use traits::Ring;
