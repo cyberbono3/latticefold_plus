@@ -1,4 +1,4 @@
-use ark_ff::BitIteratorBE;
+use ark_ff::{BitIteratorBE, Fp, FpConfig};
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize};
 use ark_std::{
     One, UniformRand, Zero,
@@ -76,4 +76,9 @@ pub trait Ring:
         }
         res
     }
+}
+
+impl<const N: usize, C: FpConfig<N>> Ring for Fp<C, N> {
+    const ZERO: Self = <C as FpConfig<N>>::ZERO;
+    const ONE: Self = <C as FpConfig<N>>::ONE;
 }
