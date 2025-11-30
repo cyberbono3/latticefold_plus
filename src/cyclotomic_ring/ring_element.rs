@@ -1,5 +1,5 @@
 use std::fmt::{Debug, Display, Formatter, Result as FmtResult};
-use std::ops::{Add, AddAssign, Mul, Neg, Sub, SubAssign};
+use std::ops::{Add, Mul, Neg, Sub};
 use zeroize::{Zeroize, ZeroizeOnDrop};
 
 use super::NTTParams;
@@ -7,20 +7,19 @@ use super::error::{CyclotomicRingError, Result};
 use num_traits::{One, Zero};
 
 use super::constants::{MAX_RING_DIMENSION, MIN_RING_DIMENSION};
-use super::traits::{NegacyclicMul, RingLike};
 use super::{BalancedCoefficients, RingConfig, RingParams};
 
 /// Cyclotomic ring element in R = Z[X]/(X^d + 1).
 #[derive(Clone, PartialEq, Eq, Zeroize, ZeroizeOnDrop)]
 pub struct RingElement {
     /// Coefficient representation in balanced form
-    coefficients: BalancedCoefficients,
+    pub(crate) coefficients: BalancedCoefficients,
 
     /// Ring dimension d (must be power of 2)
-    dimension: usize,
+    pub(crate) dimension: usize,
 
     /// Optional modulus for Rq = R/qR operations
-    modulus: Option<i64>,
+    pub(crate) modulus: Option<i64>,
 }
 
 impl RingElement {
@@ -1033,38 +1032,6 @@ impl RingElement {
     }
 }
 
-impl RingLike for RingElement {
-    fn dimension(&self) -> usize {
-        self.dimension
-    }
-
-    fn modulus(&self) -> Option<i64> {
-        self.modulus
-    }
-
-    fn coefficients(&self) -> &[i64] {
-        self.coefficients()
-    }
-
-    fn add(&self, other: &Self) -> Result<Self> {
-        self.add(other)
-    }
-
-    fn sub(&self, other: &Self) -> Result<Self> {
-        self.sub(other)
-    }
-
-    fn negated(&self) -> Result<Self> {
-        self.negate()
-    }
-}
-
-impl NegacyclicMul for RingElement {
-    fn mul_negacyclic(&self, other: &Self) -> Result<Self> {
-        self.multiply(other)
-    }
-}
-
 impl Add for RingElement {
     type Output = RingElement;
 
@@ -1086,21 +1053,5 @@ impl Mul for RingElement {
 
     fn mul(self, rhs: RingElement) -> Self::Output {
         self.multiply(&rhs).expect("mul failed")
-    }
-}
-
-impl AddAssign<RingElement> for RingElement {
-    fn add_assign(&mut self, rhs: RingElement) {
-        if let Ok(result) = RingLike::add(self, &rhs) {
-            *self = result;
-        }
-    }
-}
-
-impl SubAssign<RingElement> for RingElement {
-    fn sub_assign(&mut self, rhs: RingElement) {
-        if let Ok(result) = RingLike::sub(self, &rhs) {
-            *self = result;
-        }
     }
 }

@@ -1,28 +1,79 @@
-use super::error::Result;
+use ark_ff::BitIteratorBE;
+use ark_serialize::{CanonicalDeserialize, CanonicalSerialize};
+use ark_std::{
+    One, UniformRand, Zero,
+    fmt::{Debug, Display},
+    hash::Hash,
+    iter::{Product, Sum},
+    ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign},
+};
 
-/// Minimal ring-like interface to decouple algorithms from storage.
-pub trait RingLike: Sized {
-    /// Returns the ring dimension.
-    fn dimension(&self) -> usize;
+pub trait Ring:
+    'static
+    + Copy
+    + Clone
+    + Debug
+    + Display
+    + Default
+    + Send
+    + Sync
+    + Eq
+    + Zero
+    + One
+    + Neg<Output = Self>
+    + UniformRand
+    + Sized
+    + Hash
+    + CanonicalSerialize
+    + CanonicalDeserialize
+    + Add<Self, Output = Self>
+    + Sub<Self, Output = Self>
+    + Mul<Self, Output = Self>
+    + AddAssign<Self>
+    + SubAssign<Self>
+    + MulAssign<Self>
+    + Sum<Self>
+    + Product<Self>
+    + From<u128>
+    + From<u64>
+    + From<u32>
+    + From<u16>
+    + From<u8>
+    + From<bool>
+{
+    /// The additive identity of the ring.
+    const ZERO: Self;
+    /// The multiplicative identity of the ring.
+    const ONE: Self;
 
-    /// Returns the modulus if operating in Rq, otherwise None for integer ring.
-    fn modulus(&self) -> Option<i64>;
+    /// Returns `sum([a_i * b_i])`.
+    #[inline]
+    fn sum_of_products<const T: usize>(a: &[Self; T], b: &[Self; T]) -> Self {
+        let mut sum = Self::zero();
+        for i in 0..a.len() {
+            sum += a[i] * b[i];
+        }
+        sum
+    }
 
-    /// Borrow coefficients in balanced representation.
-    fn coefficients(&self) -> &[i64];
+    fn square_in_place(&mut self) -> &mut Self {
+        *self *= *self;
+        self
+    }
 
-    /// Add another element.
-    fn add(&self, other: &Self) -> Result<Self>;
+    /// Returns `self^exp`, where `exp` is an integer represented with `u64` limbs,
+    /// least significant limb first.
+    #[must_use]
+    fn pow<S: AsRef<[u64]>>(&self, exp: S) -> Self {
+        let mut res = Self::one();
 
-    /// Subtract another element.
-    fn sub(&self, other: &Self) -> Result<Self>;
+        for i in BitIteratorBE::without_leading_zeros(exp) {
+            res.square_in_place();
 
-    /// Negate the element.
-    fn negated(&self) -> Result<Self>;
-}
-
-/// Negacyclic multiplication interface for cyclotomic rings.
-pub trait NegacyclicMul: Sized {
-    /// Multiply two elements with X^d = -1 reduction.
-    fn mul_negacyclic(&self, other: &Self) -> Result<Self>;
+            if i {
+                res *= *self;
+            }
+        }
+        res
+    }
 }

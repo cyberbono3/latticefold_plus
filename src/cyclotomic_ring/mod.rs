@@ -26,4 +26,4 @@ pub use ntt_params::NTTParams;
 pub use params::RingParams;
 pub use ring_config::RingConfig;
 pub use ring_element::RingElement;
-pub use traits::{NegacyclicMul, RingLike};
+pub use traits::Ring;
