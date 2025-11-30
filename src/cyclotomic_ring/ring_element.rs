@@ -3,6 +3,7 @@ use std::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 use zeroize::{Zeroize, ZeroizeOnDrop};
 
 use super::error::{CyclotomicRingError, Result};
+use num_traits::{One, Zero};
 use super::NTTParams;
 
 use super::{BalancedCoefficients, RingConfig, RingParams};
@@ -734,6 +735,22 @@ impl Neg for RingElement {
     }
 }
 
+impl Zero for RingElement {
+    fn zero() -> Self {
+        RingElement::zero(MIN_RING_DIMENSION, None).expect("valid zero")
+    }
+
+    fn is_zero(&self) -> bool {
+        self.coefficients().iter().all(|&c| c == 0)
+    }
+}
+
+impl One for RingElement {
+    fn one() -> Self {
+        RingElement::one(MIN_RING_DIMENSION, None).expect("valid one")
+    }
+}
+
 /// Schoolbook polynomial multiplication for small degrees
 pub(crate) fn schoolbook_multiply(f: &RingElement, g: &RingElement) -> Result<RingElement> {
     // Validate input compatibility
@@ -856,12 +873,12 @@ pub(crate) fn karatsuba_multiply(f: &RingElement, g: &RingElement) -> Result<Rin
     let p3 = karatsuba_multiply(&f_high, &g_high)?;  // f_high * g_high
     
     // Compute (f_low + f_high) * (g_low + g_high)
-    let f_sum = f_low.add(f_high)?;
-    let g_sum = g_low.add(g_high)?;
+    let f_sum = RingElement::add(&f_low, &f_high)?;
+    let g_sum = RingElement::add(&g_low, &g_high)?;
     let p2_full = karatsuba_multiply(&f_sum, &g_sum)?;
     
     // Compute p2 = p2_full - p1 - p3
-    let p2 = p2_full.sub(p1.clone())?.sub(p3.clone())?;
+    let p2 = RingElement::sub(&p2_full, &p1.clone())?.sub(&p3.clone())?;
     
     // Combine results with appropriate powers of X and negacyclic reduction
     let mut result = RingElement::zero(d, result_modulus)?;
@@ -900,28 +917,6 @@ pub(crate) fn karatsuba_multiply(f: &RingElement, g: &RingElement) -> Result<Rin
     result.coefficients.validate_bounds()?;
     
     Ok(result)
-}
-
-/// Multiplication operation for ring elements with automatic algorithm selection
-impl Mul for RingElement {
-    type Output = Result<RingElement>;
-    
-    fn mul(self, other: RingElement) -> Self::Output {
-        self.multiply(&other)
-    }
-}
-
-/// In-place multiplication operation for ring elements
-impl MulAssign<RingElement> for RingElement {
-    fn mul_assign(&mut self, other: RingElement) {
-        // Use the Mul implementation and replace self with result
-        match self.clone().mul(other) {
-            Ok(result) => *self = result,
-            Err(_) => {
-                // In case of error, leave self unchanged
-            }
-        }
-    }
 }
 
 /// Additional utility methods for ring elements.
@@ -993,18 +988,26 @@ impl NegacyclicMul for RingElement {
 }
 
 impl Add for RingElement {
-    type Output = Result<RingElement>;
+    type Output = RingElement;
 
     fn add(self, rhs: RingElement) -> Self::Output {
-        RingLike::add(&self, &rhs)
+        RingElement::add(&self, &rhs).expect("add failed")
     }
 }
 
 impl Sub for RingElement {
-    type Output = Result<RingElement>;
+    type Output = RingElement;
 
     fn sub(self, rhs: RingElement) -> Self::Output {
-        RingLike::sub(&self, &rhs)
+        RingElement::sub(&self, &rhs).expect("sub failed")
+    }
+}
+
+impl Mul for RingElement {
+    type Output = RingElement;
+
+    fn mul(self, rhs: RingElement) -> Self::Output {
+        self.multiply(&rhs).expect("mul failed")
     }
 }
 
