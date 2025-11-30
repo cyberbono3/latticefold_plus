@@ -1,5 +1,5 @@
-use super::error::{CyclotomicRingError, Result};
 use super::RingConfig;
+use super::error::{CyclotomicRingError, Result};
 
 /// NTT parameters for transform-friendly moduli.
 #[derive(Clone, Debug)]
@@ -41,9 +41,11 @@ impl NTTParams {
 
     fn find_primitive_root(modulus: i64, order: usize) -> Result<i64> {
         if (modulus - 1) % (order as i64) != 0 {
-            return Err(CyclotomicRingError::InvalidParameters(
-                format!("Order {} does not divide p-1 = {}", order, modulus - 1),
-            ));
+            return Err(CyclotomicRingError::InvalidParameters(format!(
+                "Order {} does not divide p-1 = {}",
+                order,
+                modulus - 1
+            )));
         }
 
         let generator = Self::find_generator(modulus)?;

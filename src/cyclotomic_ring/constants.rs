@@ -1,4 +1,5 @@
 /// Extended Euclidean algorithm for computing gcd and Bézout coefficients.
+#[allow(dead_code)]
 pub(crate) fn extended_gcd(a: i64, b: i64) -> (i64, i64, i64) {
     if b == 0 {
         (a, 1, 0)

@@ -24,7 +24,7 @@ impl RingConfig {
             });
         }
 
-        if dimension < MIN_RING_DIMENSION || dimension > MAX_RING_DIMENSION {
+        if !(MIN_RING_DIMENSION..=MAX_RING_DIMENSION).contains(&dimension) {
             return Err(CyclotomicRingError::InvalidDimension {
                 expected: MIN_RING_DIMENSION,
                 got: dimension,
@@ -37,7 +37,7 @@ impl RingConfig {
     /// Reduces a single coefficient into balanced representation for modulus q.
     pub fn reduce_to_balanced(coeff: i64, modulus: i64) -> i64 {
         let half_modulus = modulus / 2;
-        let mut reduced = coeff % modulus;
+        let reduced = coeff % modulus;
         if reduced > half_modulus {
             reduced - modulus
         } else if reduced < -half_modulus {

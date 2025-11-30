@@ -23,7 +23,7 @@ impl RingParams {
             });
         }
 
-        if dimension < MIN_RING_DIMENSION || dimension > MAX_RING_DIMENSION {
+        if !(MIN_RING_DIMENSION..=MAX_RING_DIMENSION).contains(&dimension) {
             return Err(CyclotomicRingError::InvalidDimension {
                 expected: MIN_RING_DIMENSION,
                 got: dimension,
