@@ -1,10 +1,3 @@
-//! Core mathematical infrastructure for LatticeFold+ cyclotomic ring arithmetic
-//!
-//! Implements the cyclotomic ring `R = Z[X]/(X^d + 1)` with optimized
-//! polynomial arithmetic, modular reduction, and SIMD-accelerated operations.
-//! The code follows the LatticeFold+ paper for power-of-two dimensions,
-//! balanced coefficient representations, and overflow-aware arithmetic.
-
 pub mod constants;
 pub mod error;
 

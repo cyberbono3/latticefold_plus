@@ -129,63 +129,6 @@ impl<const N: usize, const D: usize, C: FpConfig<N>> Zero
     }
 }
 
-// impl<const N: usize, const D: usize, C:FpConfig<N>> CyclotomicRing<N, D, C> {
-//     pub(super) fn from_coeffs_vec(mut coeffs: Vec<Fp<C::BaseFieldConfig, N>>) -> Self {
-//         // C::reduce_in_place(&mut coeffs);
-
-//         // Self(coeffs.try_into().expect("Wrong length"))
-//         todo!()
-//     }
-
-//     fn from_fn<F>(f: F) -> Self
-//     // where
-//     //     F: FnMut(usize) -> Fp<C::BaseFieldConfig, N>,
-//     // {
-//     //     let coeffs = core::array::from_fn::<_, D, _>(f);
-//     //     Self::from_array(coeffs)
-//     todo!()
-//     }
-
-//     pub(crate) fn from_array(coeffs: [Fp<C::BaseFieldConfig, N>; D]) -> Self {
-//         Self(coeffs)
-//     }
-
-//     fn poly_mul(&self, rhs: &Self) -> Self {
-//         let lhs_coeffs = self.coeffs();
-//         let rhs_coeffs = rhs.coeffs();
-//         let mut coeffs = vec![<Fp::<C::BaseFieldConfig, N> as Field>::ZERO; 2 * D - 1];
-//         for (i, &lhs_coeff) in lhs_coeffs.iter().enumerate() {
-//             if !lhs_coeff.is_zero() {
-//                 for (j, &rhs_coeff) in rhs_coeffs.iter().enumerate() {
-//                     coeffs[i + j] += lhs_coeff * rhs_coeff;
-//                 }
-//             }
-//         }
-//         C::reduce_in_place(&mut coeffs);
-//         Self::from_coeffs_vec(coeffs)
-//     }
-
-//     fn poly_mul_unchecked(&self, rhs: &Self) -> Self {
-//         let lhs_coeffs = self.coeffs();
-//         let rhs_coeffs = rhs.coeffs();
-//         let mut coeffs = vec![<Fp::<C::BaseFieldConfig, N> as Field>::ZERO; 2 * D - 1];
-//         for (i, &lhs_coeff) in lhs_coeffs.iter().enumerate() {
-//             for (j, &rhs_coeff) in rhs_coeffs.iter().enumerate() {
-//                 coeffs[i + j] += lhs_coeff * rhs_coeff;
-//             }
-//         }
-//         C::reduce_in_place(&mut coeffs);
-//         Self::from_coeffs_vec(coeffs)
-//     }
-
-//     fn poly_mul_in_place(&mut self, rhs: &Self) {
-//         // we need a reduce function for SVector to properly do a multiplication in place
-//         let res = *self * rhs;
-//         self.0 = res.0;
-//     }
-
-// }
-
 impl<const N: usize, const D: usize, C: FpConfig<N>> Default
     for CyclotomicRing<N, D, C>
 {
