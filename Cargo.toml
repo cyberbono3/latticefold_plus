@@ -1,12 +1,20 @@
+cargo-features = ["edition2024"]
+
 [package]
 name = "latticefold_pl"
 version = "0.1.0"
 edition = "2024"
 
+[features]
+default = ["std"]
+std = ["ark-crypto-primitives/std", "ark-ff/std", "ark-serialize/std", "ark-std/std", "rand/std"]
+parallel = ["ark-std/parallel", "rayon"]
+
 [dependencies]
 num-bigint = "0.4.3"
 num-traits = "0.2.15"
-rayon = "1.7.0"
+num-integer = "0.1"
+rayon = { version = "1.7.0", optional = true }
 rand = "0.8.5"
 serde = { version = "1.0.188", features = ["derive"] }
 serde_json = "1.0.107"
@@ -14,11 +22,15 @@ clap = { version = "4.3.23", features = ["derive"] }
 log = "0.4.20"
 zeroize = { version = "1.7", features = ["zeroize_derive"] }
 ark-ff = "0.5.0"
-ark-serialize = "0.5.0"
+ark-serialize = { version = "0.5.0", features = ["derive"] }
 ark-std = "0.5.0"
+ark-crypto-primitives = { version = "0.5.0", features = ["sponge"] }
+derive_more = "0.99"
 
 [dev-dependencies]
 proptest = "1.4"
+ark-poly = "0.5.0"
+rand_chacha = "0.3"
 
 
 [dev-dependencies.cargo-husky]

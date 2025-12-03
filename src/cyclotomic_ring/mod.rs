@@ -1,11 +1,13 @@
-pub mod constants;
-pub mod error;
+pub mod models;
 
-pub mod ring;
-pub mod ring_config;
-pub mod traits;
+mod coeff_form;
+mod crt;
+mod flatten;
+mod ntt_form;
+mod ring_config;
 
-pub use constants::{MAX_RING_DIMENSION, MIN_RING_DIMENSION};
-pub use error::{CyclotomicRingError, Result};
-pub use ring::CyclotomicRing;
-pub use traits::Ring;
+pub use coeff_form::*;
+pub use crt::*;
+pub use flatten::*;
+pub use ntt_form::*;
+pub use ring_config::*;

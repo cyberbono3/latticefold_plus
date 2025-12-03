@@ -1,7 +1,12 @@
 use ark_ff::{Field, Fp, FpConfig};
 use ark_std::vec::*;
 
-use super::traits::Ring;
+use crate::Ring;
+
+/// Trait for types representing elements of a cyclotomic ring that support a rotation.
+pub trait Cyclotomic {
+    fn rot(&mut self);
+}
 
 /// The trait for describing cyclotomic ring parameters.
 /// It is used to specify:

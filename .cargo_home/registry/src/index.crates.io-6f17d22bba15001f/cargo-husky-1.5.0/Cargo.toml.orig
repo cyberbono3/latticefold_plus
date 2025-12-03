@@ -1,0 +1,44 @@
+[package]
+name = "cargo-husky"
+version = "1.5.0"
+authors = ["rhysd <lin90162@yahoo.co.jp>"]
+description = "husky for cargo"
+repository = "https://github.com/rhysd/cargo-husky"
+homepage = "https://github.com/rhysd/cargo-husky#readme"
+readme = "README.md"
+keywords = ["git", "hook", "cargo"]
+categories = ["development-tools"]
+license-file = "LICENSE.txt"
+build = "build.rs"
+include = ["build.rs", "LICENSE.txt", "Cargo.toml", "src/**/*.rs"]
+
+[package.metadata.release]
+no-dev-version = true
+
+[badges]
+travis-ci = { repository = "rhysd/cargo-husky" }
+appveyor = { repository = "rhysd/cargo-husky" }
+maintenance = { status = "passively-maintained" }
+
+[[test]]
+name = "integration"
+path = "test/test.rs"
+
+[features]
+default = ["prepush-hook", "run-cargo-test", "run-for-all"]
+prepush-hook = []
+precommit-hook = []
+postmerge-hook = []
+run-cargo-test = []
+run-cargo-check = []
+run-cargo-clippy = []
+run-cargo-fmt = []
+run-for-all = []
+user-hooks = []
+
+[dependencies]
+
+[dev-dependencies]
+libc = "0.2.43"
+lazy_static = "1.1"
+semver = "0.9.0"
